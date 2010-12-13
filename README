@@ -1,0 +1,14 @@
+Hephaestus: A comprehensive PageRank package in C++
+Credit to Tomislav Janjusic for writing the getAdjLists() and buildGraphs() functions and helping in debugging the header files hierarchy and the naive PageRank algorithm.
+
+Implements the naive and the more efficient version of PageRank according to Taher Haveliwala's paper Efficient Computing of PageRank. Takes an adjacency matrix, a bias vector, and certain booleans and computes the PageRank score for all vertices in the graph using either the fixed iteration method or the threshold method.
+
+Files: main.cpp, Hephaestus.h, HephHelperFuncs.h, and HephIncludes.h
+Format for the adjacency matrix file: row by row matrix [weighted or unweighted]
+Format for the bias vector file: single line, values separated by space
+
+Compile with g++ main.cpp -o main, run with ./main
+
+~Signed
+AmbidextrousTx
+Dec 13, 2010
