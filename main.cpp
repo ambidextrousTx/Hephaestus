@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     bool iterated, biased, weighted, directed;
     int numRows, numIter;
     double threshold, d;
-    vector<double> biasVec;
+    vector<double> biasVec, personalization;
     vector <vector<v_type> > adjLists;
     
     // Variable vector for the final results
@@ -25,30 +25,30 @@ int main(int argc, char *argv[]) {
     getArguments(iterated, biased, weighted, directed,
         numRows, numIter, threshold, d, biasVec, adjLists);
     
+    // Handle the personalization vector / biasing
+    if(biased)
+        for(int i = 0; i < biasVec.size(); i++)
+            personalization.push_back(biasVec[i]);
+    else
+        for(int i = 0; i < adjLists.size(); i++) {
+            double temp = 1/(double)adjLists.size();
+            personalization.push_back(temp);
+        }    
+    
+    
     // Create the Hephaestus object
     Hephaestus *hObject = new Hephaestus(iterated, biased, weighted, directed,
-        numRows, numIter, threshold, d, biasVec, adjLists);
+        numRows, numIter, threshold, d, biasVec, personalization, adjLists);
     
     // Check if all's well
-    // hObject->check();
+    hObject->check();
     
-    pageRank = hObject->converge();
-   
-   /* 
+    pageRank = iterated ? hObject->iterateNaive() : hObject->convergeNaive();
+       
     for(int pi = 0; pi < pageRank.size(); pi++)
         cout << pageRank[pi] << " ";
     
     cout << endl;
-   */
-    /*
-   
-    pageRank = iterated ? hObject->iterate() : hObject->converge();
-    
-    for(int pi = 0; pi < pageRank.size; pi++)
-        cout << pageRank[pi] << " ";
-        
-    cout << endl;
-    */
    
     return 0;
 }

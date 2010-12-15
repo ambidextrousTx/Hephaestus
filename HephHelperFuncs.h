@@ -52,7 +52,7 @@ vector<vector<v_type> > getAdjLists(ifstream &fsIn) {
                 stm.str(buf);
                 stm >> struct_buff.value;
                 
-                //insert into verctor
+                //insert into vector
                 if(struct_buff.value != 0)
                     row.push_back(struct_buff);
                 
@@ -172,7 +172,7 @@ void getArguments(bool &iterated, bool &biased, bool &weighted, bool &directed,
     
 }
 
-void buildGraph(vector< vector<v_type> > adj_list, vector<double> pageScore, ofstream& fsOut, string graph_name){
+void buildGraphs(vector< vector<v_type> > adj_list, vector<double> pageScore, ofstream& fsOut, string graph_name){
 
     int i=0, j=0;
 
