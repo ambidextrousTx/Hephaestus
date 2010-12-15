@@ -97,7 +97,8 @@ vector<double> getBiasVector(ifstream &biasFileStream) {
     return(biasVec);
 }
 
-void getArguments(bool &iterated, bool &biased, bool &weighted, bool &directed,
+void getArguments(bool &iterated, bool &biased, bool &weighted,
+        bool &directed, bool &smart,
         int &numRows, int &numIter,
         double &threshold, double &d,
         vector<double>& biasVec, 
@@ -112,6 +113,11 @@ void getArguments(bool &iterated, bool &biased, bool &weighted, bool &directed,
     ss >> fileName;
     
     cout << "Please enter '1' for true or '0' for false [quotes for clarity] for the following:" << endl;
+    
+    cout << "Smart? ";
+    getline(cin, line);
+    smart = atoi(line.c_str()) ? true : false;
+    
     cout << "Iterated? ";
     getline(cin, line);
     iterated = atoi(line.c_str()) ? true : false ;

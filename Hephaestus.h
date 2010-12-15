@@ -70,7 +70,7 @@ class Hephaestus {
     vector<double> personalization;         //  personalization vector  
 	vector<vector<v_type> > adjLists;		// 	adjacency lists
 							
-	bool iterated, biased, weighted, directed;	//	booleans
+	bool iterated, biased, weighted, directed, smart;	//	booleans
 	
 	double getVectorDifference(vector<double> source, vector<double> dest) {
 	    double diff = 0;
@@ -83,6 +83,7 @@ class Hephaestus {
     void naivePageRank(vector<double>& source, vector<double>& dest,
         double &residual, int &N) {
         
+        dest.clear();       
         for(int i = 0; i < N; i++)
             dest.push_back(0);
         
@@ -110,14 +111,18 @@ class Hephaestus {
         
         cout << endl;
         
-        dest.clear();       
+    }
+    
+    void smartPageRank(vector<double>& source, vector<double>& dest,
+        double &residual, int &N) {
         
     }
 
 	public:
 
 	// Constructors
-	Hephaestus(bool iterated, bool biased, bool weighted, bool directed,
+	Hephaestus(bool iterated, bool biased, bool weighted,
+        bool directed, bool smart,
 		int numRows, int numIter,
 		double threshold, double d,
 		vector<double> biasVec, vector<double> personalization,
@@ -132,13 +137,14 @@ class Hephaestus {
 	//	convergence-based naive method
 	vector<double> convergeNaive();
     //  iteration-based block-based strategy
-    vector<double> iterateSmarter();
+    vector<double> iterateSmart();
     //  convergence-based block-based strategy
-    vector<double> convergeSmarter();
+    vector<double> convergeSmart();
 	
 };
 
-Hephaestus::Hephaestus(bool iteratedP, bool biasedP, bool weightedP, bool directedP,
+Hephaestus::Hephaestus(bool iteratedP, bool biasedP, bool weightedP,
+        bool directedP, bool smartP,
         int numRowsP, int numIterP,
         double thresholdP, double dP,
         vector<double> biasVecP, vector<double> personalizationP,
@@ -149,6 +155,7 @@ Hephaestus::Hephaestus(bool iteratedP, bool biasedP, bool weightedP, bool direct
     biased = biasedP;
     weighted = weightedP;
     directed = directedP;
+    smart = smartP;
     
     numRows = numRowsP;
     numIter = numIterP;
@@ -167,42 +174,50 @@ Hephaestus::~Hephaestus() {
 }
 
 void Hephaestus::check() {
-    cout << "numIter = " << numIter << endl;
+    cout << "smart = " << boolalpha << smart << endl;
+    if(iterated)
+        cout << "numIter = " << numIter << endl;
+    else
+        cout << "numIter not supplied" << endl;
     cout << "numRows = " << numRows << endl;
         
     cout << "iterated = " << boolalpha << iterated << endl;
     cout << "biased = " << boolalpha << biased << endl;
     cout << "weighted = " << boolalpha << weighted << endl;
-    cout << "directed = " << boolalpha << directed << endl;
+    cout << "directed = " << boolalpha << directed << endl;    
     
-    cout << "threshold = " << threshold << endl;
+    if(iterated)
+        cout << "threshold not supplied" << endl;
+    else 
+        cout << "threshold = " << threshold << endl;
+        
     cout << "d = " << d << endl;
     
+    cout << "Peronalization vector calculated:" << endl;    
     for(int i = 0; i < personalization.size(); i++)
         cout << personalization[i] << " ";
     cout << endl;
     
+    cout << "Bias vector supplied:" << endl;    
     for(int i = 0; i < biasVec.size(); i++) 
-        cout << biasVec[i] << " ";
-    
+        cout << biasVec[i] << " ";    
     cout << endl;
     
+    cout << "Adjacency lists computed from the matrix:" << endl;    
     for(int i = 0; i < adjLists.size(); i++) {
         for(int j = 0; j < adjLists[i].size(); j++)
             cout << adjLists[i][j].index << " ";
         cout << endl;
-    }
-    
+    }    
     cout << endl;   
     
+    cout << "Values/ weights in the lists:" << endl;
     for(int i = 0; i < adjLists.size(); i++) {
         for(int j = 0; j < adjLists[i].size(); j++)
             cout << adjLists[i][j].value << " ";
         cout << endl;
-    }
-                
-    cout << endl;
-    
+    }               
+    cout << endl;    
 }
 
 vector<double> Hephaestus::iterateNaive() {
@@ -219,8 +234,7 @@ vector<double> Hephaestus::iterateNaive() {
     for(int i = 0; i < numIter; i++) {
         naivePageRank(source, dest, residual, N);
     }
-    return dest;
-    
+    return dest;    
 }
 
 
@@ -239,8 +253,42 @@ vector<double> Hephaestus::convergeNaive() {
     while(residual > threshold) {
         naivePageRank(source, dest, residual, N);
     }
+    
     return dest;
 }
 
+vector<double> Hephaestus::iterateSmart() {
+    vector<double> source, dest;
+    double residual = 1;
+    
+    int N = adjLists.size();
+        
+    for(int i = 0; i < N; i++) {
+        double temp = 1/(double)N;
+        source.push_back(temp);        
+    }
+    
+    for(int i = 0; i < numIter; i++) {
+        smartPageRank(source, dest, residual, N);
+    }
+    return dest;    
+}
+
+vector<double> Hephaestus::convergeSmart() {
+    vector<double> source, dest;
+    double residual = 1;
+    
+    int N = adjLists.size();
+        
+    for(int i = 0; i < N; i++) {
+        double temp = 1/(double)N;
+        source.push_back(temp);        
+    }
+    
+    while(residual > threshold) {
+        smartPageRank(source, dest, residual, N);
+    }
+    return dest;    
+}
 
 #endif

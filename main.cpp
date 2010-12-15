@@ -9,7 +9,7 @@
 int main(int argc, char *argv[]) {
     
     // Variables    
-    bool iterated, biased, weighted, directed;
+    bool iterated, biased, weighted, directed, smart;
     int numRows, numIter;
     double threshold, d;
     vector<double> biasVec, personalization;
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     checkArguments(argc);
     
     // Get all arguments
-    getArguments(iterated, biased, weighted, directed,
+    getArguments(iterated, biased, weighted, directed, smart,
         numRows, numIter, threshold, d, biasVec, adjLists);
     
     // Handle the personalization vector / biasing
@@ -37,14 +37,19 @@ int main(int argc, char *argv[]) {
     
     
     // Create the Hephaestus object
-    Hephaestus *hObject = new Hephaestus(iterated, biased, weighted, directed,
+    Hephaestus *hObject = new Hephaestus(iterated, biased, weighted,
+        directed, smart,
         numRows, numIter, threshold, d, biasVec, personalization, adjLists);
     
     // Check if all's well
     hObject->check();
     
-    pageRank = iterated ? hObject->iterateNaive() : hObject->convergeNaive();
+    pageRank = smart ? 
+        (iterated ? hObject->iterateSmart() : hObject->convergeSmart())
+        : (iterated ? hObject->iterateNaive() : hObject->convergeNaive());
        
+    cout << "Hephaestus successfully completed." << endl;
+    
     for(int pi = 0; pi < pageRank.size(); pi++)
         cout << pageRank[pi] << " ";
     
